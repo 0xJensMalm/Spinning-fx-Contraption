@@ -3,7 +3,7 @@ new p5((sketch) => {
   let f = 0; // Animation variable
   let canvasSize;
 
-  // Define numbers and their weights using fx(hash) random parameters
+  // Define numbers and their weights
   const numbers = [
     { name: "Low", weight: 10, increment: sketch.PI / 28 },
     { name: "Mid", weight: 60, increment: sketch.PI / 14 },
@@ -11,12 +11,13 @@ new p5((sketch) => {
     { name: "Extreme", weight: 5, increment: sketch.PI / 3.5 },
   ];
 
+  // Function to randomly select a number based on weights, using fx(hash) randomness
   function weightedRandomSelection(options) {
     let totalWeight = options.reduce(
       (total, option) => total + option.weight,
       0
     );
-    let random = Math.random() * totalWeight; // Consider using $fx.random() for blockchain-based randomness
+    let random = $fx.rand() * totalWeight; // Corrected from $fx.random() to $fx.rand()
     for (let i = 0; i < options.length; i++) {
       if (random < options[i].weight) {
         return options[i];
@@ -26,7 +27,11 @@ new p5((sketch) => {
     return options[0]; // Fallback if something goes wrong
   }
 
+  // Select a number randomly based on the defined weights
   const selectedNumber = weightedRandomSelection(numbers);
+  $fx.features({
+    Numbers: selectedNumber.name, // Reporting the selected number as a feature
+  });
 
   sketch.setup = function () {
     canvasSize = sketch.min(sketch.windowWidth, sketch.windowHeight);
@@ -66,7 +71,7 @@ new p5((sketch) => {
       sketch.circle(x, y, canvasSize * 0.015);
     }
 
-    f += 0.01;
+    f += 0.01; // Increment the frame animation variable
   };
 });
 
