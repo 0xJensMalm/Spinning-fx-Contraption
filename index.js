@@ -1,38 +1,102 @@
-// Import p5.js
+// Import p5.js and define the sketch
 new p5((sketch) => {
-  let f = 0; // Animation variable
-  let canvasSize;
+  let f = 0; // Animation variable for dynamic movements
+  let canvasSize; // Variable to store canvas size for responsiveness
 
-  // Define numbers and their weights
+  // Define numbers and their weights for different animation speeds
   const numbers = [
-    { name: "Low", weight: 10, increment: sketch.PI / 28 },
-    { name: "Mid", weight: 60, increment: sketch.PI / 14 },
-    { name: "High", weight: 15, increment: sketch.PI / 7 },
-    { name: "Extreme", weight: 5, increment: sketch.PI / 3.5 },
+    { name: "Low", weight: 10, increment: sketch.PI / 3 },
+    { name: "Mid", weight: 60, increment: sketch.PI / 18 },
+    { name: "High", weight: 15, increment: sketch.PI / 40 },
+    { name: "Extreme", weight: 5, increment: sketch.PI / 300 },
   ];
 
-  // Function to randomly select a number based on weights, using fx(hash) randomness
+  // Define color palettes and their weights
+  const colorPalettes = [
+    // 8bit palette
+    {
+      name: "8bit",
+      weight: 20,
+      colors: {
+        bg: "#000000",
+        outerDots: "#FF0000",
+        middleDots: "#00FF00",
+        innerDots: "#0000FF",
+      },
+    },
+    // Vampire palette
+    {
+      name: "IceCream",
+      weight: 20,
+      colors: {
+        bg: "#80ffdb",
+        outerDots: "#72efdd",
+        middleDots: "#4ea8de",
+        innerDots: "#7400b8",
+      },
+    },
+    // Hacker palette
+    {
+      name: "Hacker",
+      weight: 20,
+      colors: {
+        bg: "#0F3D0F",
+        outerDots: "#127212",
+        middleDots: "#00FF00",
+        innerDots: "#ADEBAD",
+      },
+    },
+    // BlueSky palette
+    {
+      name: "BlueSky",
+      weight: 20,
+      colors: {
+        bg: "#87CEEB",
+        outerDots: "#90e0ef",
+        middleDots: "#3a86ff",
+        innerDots: "#F0F8FF",
+      },
+    },
+    // Monochrome palette
+    {
+      name: "Monochrome",
+      weight: 20,
+      colors: {
+        bg: "#000000",
+        outerDots: "#333333",
+        middleDots: "#666666",
+        innerDots: "#FFD700",
+      },
+    },
+  ];
+
+  // Function to randomly select based on weights, using fx(hash) randomness
   function weightedRandomSelection(options) {
     let totalWeight = options.reduce(
       (total, option) => total + option.weight,
       0
     );
-    let random = $fx.rand() * totalWeight; // Corrected from $fx.random() to $fx.rand()
+    let random = $fx.rand() * totalWeight;
     for (let i = 0; i < options.length; i++) {
       if (random < options[i].weight) {
         return options[i];
       }
       random -= options[i].weight;
     }
-    return options[0]; // Fallback if something goes wrong
+    return options[0];
   }
 
-  // Select a number randomly based on the defined weights
+  // Select a number and a color palette randomly
   const selectedNumber = weightedRandomSelection(numbers);
+  const selectedPalette = weightedRandomSelection(colorPalettes);
+
+  // Report selected features
   $fx.features({
-    Numbers: selectedNumber.name, // Reporting the selected number as a feature
+    Numbers: selectedNumber.name,
+    ColorPalette: selectedPalette.name,
   });
 
+  // Setup sketch
   sketch.setup = function () {
     canvasSize = sketch.min(sketch.windowWidth, sketch.windowHeight);
     sketch.createCanvas(canvasSize, canvasSize);
@@ -40,13 +104,15 @@ new p5((sketch) => {
     sketch.loop();
   };
 
+  // Handle window resizing
   sketch.windowResized = function () {
     canvasSize = sketch.min(sketch.windowWidth, sketch.windowHeight);
     sketch.resizeCanvas(canvasSize, canvasSize);
   };
 
+  // Draw function for animations
   sketch.draw = function () {
-    sketch.background(0);
+    sketch.background(selectedPalette.colors.bg);
     let centerX = canvasSize / 2;
     let centerY = canvasSize / 2;
     let maxRadius = canvasSize / 2.35;
@@ -55,6 +121,7 @@ new p5((sketch) => {
       let r = maxRadius / 2;
       let x = sketch.sin(f + i) * r + centerX;
       let y = sketch.cos(f + i) * r + centerY;
+      sketch.fill(selectedPalette.colors.innerDots);
       sketch.circle(x, y, canvasSize * 0.015);
 
       r = maxRadius;
@@ -62,11 +129,13 @@ new p5((sketch) => {
       let Y = sketch.cos(f + i) * r + centerY;
       X = sketch.constrain(X, centerX - maxRadius / 2, centerX + maxRadius / 2);
       Y = sketch.constrain(Y, centerY - maxRadius / 2, centerY + maxRadius / 2);
+      sketch.fill(selectedPalette.colors.middleDots);
       sketch.line(x, y, X, Y);
       sketch.circle(X, Y, canvasSize * 0.015);
 
       x = sketch.sin(f + i) * r + centerX;
       y = sketch.cos(f + i) * r + centerY;
+      sketch.fill(selectedPalette.colors.outerDots);
       sketch.line(x, y, X, Y);
       sketch.circle(x, y, canvasSize * 0.015);
     }
@@ -76,7 +145,8 @@ new p5((sketch) => {
 });
 
 function updateDOM() {
-  const bgcolor = "#000000";
+  // Update DOM only if necessary or during specific interactions
+  const bgcolor = "#000000"; // Using a fixed background for simplicity
   const textcolor = "#ffffff";
   document.body.style.background = bgcolor;
   document.body.innerHTML = `
@@ -91,6 +161,3 @@ function updateDOM() {
     </div>
   `;
 }
-
-// Initiate the main drawing function after the DOM is updated
-updateDOM();
