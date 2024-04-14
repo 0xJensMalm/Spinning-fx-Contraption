@@ -13,22 +13,22 @@ new p5((sketch) => {
   const numbers = [
     {
       name: "low",
-      weight: 25,
+      weight: 30,
       increment: sketch.PI / (increments["low"] = randomRange(2, 10)),
     },
     {
       name: "mid",
-      weight: 25,
+      weight: 30,
       increment: sketch.PI / (increments["mid"] = randomRange(10, 20)),
     },
     {
       name: "high",
-      weight: 25,
+      weight: 30,
       increment: sketch.PI / (increments["high"] = randomRange(20, 60)),
     },
     {
       name: "extreme",
-      weight: 25,
+      weight: 10,
       increment: sketch.PI / (increments["extreme"] = randomRange(100, 300)),
     },
   ];
@@ -81,7 +81,7 @@ new p5((sketch) => {
     },
     {
       name: "monochrome",
-      weight: 20,
+      weight: 5,
       colors: {
         bg: "#000000",
         outerDots: "#333333",
@@ -91,18 +91,18 @@ new p5((sketch) => {
       },
     },
     {
-      name: "Vivid",
+      name: "sunset",
       weight: 20,
       colors: {
-        bg: "#8E44AD", // Vivid Purple background
-        outerDots: "#E74C3C", // Bright Red for outer dots
-        middleDots: "#F1C40F", // Vibrant Yellow for middle dots
-        innerDots: "#2ECC71", // Emerald Green for inner dots
-        lineStroke: "#000000",
+        bg: "#FFDAB9", // Peach background
+        outerDots: "#FF6347", // Tomato for outer dots
+        middleDots: "#FF4500", // OrangeRed for middle dots
+        innerDots: "#DB7093", // PaleVioletRed for inner dots
+        lineStroke: "#FA8072", // Salmon for line strokes
       },
     },
     {
-      name: "Blueprint",
+      name: "blueprint",
       weight: 20,
       colors: {
         bg: "#D6EAF8", // Light Sky Blue background
@@ -113,7 +113,29 @@ new p5((sketch) => {
       },
     },
     {
-      name: "Space",
+      name: "neon",
+      weight: 20,
+      colors: {
+        bg: "#000000", // Black background to highlight neon colors
+        outerDots: "#FFD700", // Gold for outer dots
+        middleDots: "#4B0082", // Indigo for middle dots
+        innerDots: "#00FF00", // Lime for inner dots
+        lineStroke: "#FF00FF", // Magenta for line strokes
+      },
+    },
+    {
+      name: "fiesta",
+      weight: 20,
+      colors: {
+        bg: "#FF6347", // Tomato background
+        outerDots: "#FFD700", // Gold for outer dots
+        middleDots: "#32CD32", // LimeGreen for middle dots
+        innerDots: "#00BFFF", // DeepSkyBlue for inner dots
+        lineStroke: "#FFD700", // OrangeRed for line strokes
+      },
+    },
+    {
+      name: "space",
       weight: 20,
       colors: {
         bg: "#0B0C10", // Deep Space Black for background
