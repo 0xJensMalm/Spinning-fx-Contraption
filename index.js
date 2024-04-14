@@ -3,17 +3,36 @@ new p5((sketch) => {
   let f = 0; // Animation variable for dynamic movements
   let canvasSize; // Variable to store canvas size for responsiveness
 
+  function randomRange(min, max) {
+    return min + $fx.rand() * (max - min);
+  }
+  let increments = {};
   // Define numbers and their weights for different animation speeds
   const numbers = [
-    { name: "Low", weight: 10, increment: sketch.PI / 3 },
-    { name: "Mid", weight: 60, increment: sketch.PI / 18 },
-    { name: "High", weight: 15, increment: sketch.PI / 40 },
-    { name: "Extreme", weight: 5, increment: sketch.PI / 300 },
+    {
+      name: "Low",
+      weight: 25,
+      increment: sketch.PI / (increments["Low"] = randomRange(2, 10)),
+    },
+    {
+      name: "Mid",
+      weight: 25,
+      increment: sketch.PI / (increments["Mid"] = randomRange(14, 30)),
+    },
+    {
+      name: "High",
+      weight: 25,
+      increment: sketch.PI / (increments["High"] = randomRange(40, 80)),
+    },
+    {
+      name: "Extreme",
+      weight: 25,
+      increment: sketch.PI / (increments["Extreme"] = randomRange(100, 300)),
+    },
   ];
 
   // Define color palettes and their weights
   const colorPalettes = [
-    // 8bit palette
     {
       name: "8bit",
       weight: 20,
@@ -22,9 +41,9 @@ new p5((sketch) => {
         outerDots: "#FF0000",
         middleDots: "#00FF00",
         innerDots: "#0000FF",
+        lineStroke: "#FFFFFF", // Added lineStroke color
       },
     },
-    // Vampire palette
     {
       name: "IceCream",
       weight: 20,
@@ -33,9 +52,9 @@ new p5((sketch) => {
         outerDots: "#72efdd",
         middleDots: "#4ea8de",
         innerDots: "#7400b8",
+        lineStroke: "#000000", // Added lineStroke color
       },
     },
-    // Hacker palette
     {
       name: "Hacker",
       weight: 20,
@@ -44,9 +63,9 @@ new p5((sketch) => {
         outerDots: "#127212",
         middleDots: "#00FF00",
         innerDots: "#ADEBAD",
+        lineStroke: "#00FF00", // Added lineStroke color
       },
     },
-    // BlueSky palette
     {
       name: "BlueSky",
       weight: 20,
@@ -55,9 +74,9 @@ new p5((sketch) => {
         outerDots: "#90e0ef",
         middleDots: "#3a86ff",
         innerDots: "#F0F8FF",
+        lineStroke: "#ADD8E6", // Added lineStroke color
       },
     },
-    // Monochrome palette
     {
       name: "Monochrome",
       weight: 20,
@@ -66,6 +85,7 @@ new p5((sketch) => {
         outerDots: "#333333",
         middleDots: "#666666",
         innerDots: "#FFD700",
+        lineStroke: "#FFFFFF", // Added lineStroke color
       },
     },
   ];
@@ -93,6 +113,7 @@ new p5((sketch) => {
   // Report selected features
   $fx.features({
     Numbers: selectedNumber.name,
+    IncrementValue: increments[selectedNumber.name].toFixed(2),
     ColorPalette: selectedPalette.name,
   });
 
@@ -100,7 +121,6 @@ new p5((sketch) => {
   sketch.setup = function () {
     canvasSize = sketch.min(sketch.windowWidth, sketch.windowHeight);
     sketch.createCanvas(canvasSize, canvasSize);
-    sketch.stroke(255);
     sketch.loop();
   };
 
@@ -113,6 +133,7 @@ new p5((sketch) => {
   // Draw function for animations
   sketch.draw = function () {
     sketch.background(selectedPalette.colors.bg);
+    sketch.stroke(selectedPalette.colors.lineStroke);
     let centerX = canvasSize / 2;
     let centerY = canvasSize / 2;
     let maxRadius = canvasSize / 2.35;
