@@ -2,6 +2,8 @@
 new p5((sketch) => {
   let f = 0; // Animation variable for dynamic movements
   let canvasSize; // Variable to store canvas size for responsiveness
+  let randomStartEnabled = $fx.rand() < 0.5; // Set this based on your dynamic needs or keep it static
+  let startAngle = randomStartEnabled ? $fx.rand() * sketch.TAU : 0; // Calculate once
 
   function randomRange(min, max) {
     return min + $fx.rand() * (max - min);
@@ -10,53 +12,53 @@ new p5((sketch) => {
   // Define numbers and their weights for different animation speeds
   const numbers = [
     {
-      name: "Low",
+      name: "low",
       weight: 25,
-      increment: sketch.PI / (increments["Low"] = randomRange(2, 10)),
+      increment: sketch.PI / (increments["low"] = randomRange(2, 10)),
     },
     {
-      name: "Mid",
+      name: "mid",
       weight: 25,
-      increment: sketch.PI / (increments["Mid"] = randomRange(14, 30)),
+      increment: sketch.PI / (increments["mid"] = randomRange(10, 20)),
     },
     {
-      name: "High",
+      name: "high",
       weight: 25,
-      increment: sketch.PI / (increments["High"] = randomRange(40, 80)),
+      increment: sketch.PI / (increments["high"] = randomRange(20, 60)),
     },
     {
-      name: "Extreme",
+      name: "extreme",
       weight: 25,
-      increment: sketch.PI / (increments["Extreme"] = randomRange(100, 300)),
+      increment: sketch.PI / (increments["extreme"] = randomRange(100, 300)),
     },
   ];
 
   // Define color palettes and their weights
   const colorPalettes = [
     {
-      name: "8bit",
+      name: "Retro",
       weight: 20,
       colors: {
-        bg: "#000000",
-        outerDots: "#FF0000",
-        middleDots: "#00FF00",
-        innerDots: "#0000FF",
-        lineStroke: "#FFFFFF", // Added lineStroke color
+        bg: "#F4D03F", // Mustard Yellow background
+        outerDots: "#D35400", // Burnt Orange for outer dots
+        middleDots: "#2980B9", // Retro Blue for middle dots
+        innerDots: "#F39C12", // Golden Yellow for inner dots
+        lineStroke: "#CD6155", // Soft Red for line strokes
       },
     },
     {
-      name: "IceCream",
+      name: "icecream",
       weight: 20,
       colors: {
         bg: "#80ffdb",
-        outerDots: "#72efdd",
+        outerDots: "#F39C12",
         middleDots: "#4ea8de",
         innerDots: "#7400b8",
         lineStroke: "#000000", // Added lineStroke color
       },
     },
     {
-      name: "Hacker",
+      name: "forest",
       weight: 20,
       colors: {
         bg: "#0F3D0F",
@@ -67,18 +69,18 @@ new p5((sketch) => {
       },
     },
     {
-      name: "BlueSky",
+      name: "bluesky",
       weight: 20,
       colors: {
         bg: "#87CEEB",
         outerDots: "#90e0ef",
         middleDots: "#3a86ff",
         innerDots: "#F0F8FF",
-        lineStroke: "#ADD8E6", // Added lineStroke color
+        lineStroke: "#F0F8FF", // Added lineStroke color
       },
     },
     {
-      name: "Monochrome",
+      name: "monochrome",
       weight: 20,
       colors: {
         bg: "#000000",
@@ -86,6 +88,39 @@ new p5((sketch) => {
         middleDots: "#666666",
         innerDots: "#FFD700",
         lineStroke: "#FFFFFF", // Added lineStroke color
+      },
+    },
+    {
+      name: "Vivid",
+      weight: 20,
+      colors: {
+        bg: "#8E44AD", // Vivid Purple background
+        outerDots: "#E74C3C", // Bright Red for outer dots
+        middleDots: "#F1C40F", // Vibrant Yellow for middle dots
+        innerDots: "#2ECC71", // Emerald Green for inner dots
+        lineStroke: "#000000",
+      },
+    },
+    {
+      name: "Blueprint",
+      weight: 20,
+      colors: {
+        bg: "#D6EAF8", // Light Sky Blue background
+        outerDots: "#2980B9", // Blueprint Blue for outer dots
+        middleDots: "#21618C", // Dark Blueprint Blue for middle dots
+        innerDots: "#90e0ef", // Deep Ocean Blue for inner dots
+        lineStroke: "#154360", // Navy Blue for line strokes
+      },
+    },
+    {
+      name: "Space",
+      weight: 20,
+      colors: {
+        bg: "#0B0C10", // Deep Space Black for background
+        outerDots: "#1F2833", // Dark Grey mimicking the quiet of space for outer dots
+        middleDots: "#C5C6C7", // Light Grey representing distant stars for middle dots
+        innerDots: "#66FCF1", // Electric Cyan for inner dots, reminiscent of pulsar stars
+        lineStroke: "#45A29E", // Teal Blue for line strokes, adding a vibrant touch
       },
     },
   ];
@@ -112,9 +147,10 @@ new p5((sketch) => {
 
   // Report selected features
   $fx.features({
-    Numbers: selectedNumber.name,
-    IncrementValue: increments[selectedNumber.name].toFixed(2),
-    ColorPalette: selectedPalette.name,
+    range: selectedNumber.name,
+    n: Math.round(increments[selectedNumber.name]),
+    palette: selectedPalette.name,
+    spiraling: randomStartEnabled ? "true" : "false",
   });
 
   // Setup sketch
@@ -138,10 +174,12 @@ new p5((sketch) => {
     let centerY = canvasSize / 2;
     let maxRadius = canvasSize / 2.35;
 
+    f += 0.01; // Increment the frame animation variable
+
     for (let i = 0; i < sketch.TAU; i += selectedNumber.increment) {
       let r = maxRadius / 2;
-      let x = sketch.sin(f + i) * r + centerX;
-      let y = sketch.cos(f + i) * r + centerY;
+      let x = sketch.sin(f + i + startAngle) * r + centerX;
+      let y = sketch.cos(f + i + startAngle) * r + centerY;
       sketch.fill(selectedPalette.colors.innerDots);
       sketch.circle(x, y, canvasSize * 0.015);
 
@@ -160,8 +198,6 @@ new p5((sketch) => {
       sketch.line(x, y, X, Y);
       sketch.circle(x, y, canvasSize * 0.015);
     }
-
-    f += 0.01; // Increment the frame animation variable
   };
 });
 
